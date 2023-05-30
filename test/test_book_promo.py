@@ -12,75 +12,62 @@ link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-s
 product_base_link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207"
 links = [f"{product_base_link}/?promo=offer{index}" for index in range(10)]
 
+@pytest.mark.promo
+class TestPromoPage:
 
-@pytest.mark.parametrize('link', links)
-def test_guest_can_add_product_to_basket(browser, link):
-    # GIVEN
-    page = BookPage(browser, link)
-    page.open()
+    @pytest.mark.parametrize('link', links)
+    def test_guest_can_add_product_to_basket(browser, link):
+        # GIVEN
+        page = BookPage(browser, link)
+        page.open()
 
-    # WHEN
-    book = page.get_title()
-    price = page.get_price()
-    page.add_to_basket() \
-        .solve_quiz_and_get_code()
+        # WHEN
+        book = page.get_title()
+        price = page.get_price()
+        page.add_to_basket() \
+            .solve_quiz_and_get_code()
 
-    # THEN
-    assert page.get_notification_messages().__contains__(book) \
-           and page.get_notification_messages().__contains__(price), \
-        f"notifications should contains book title: {book} and price: {price}"
-
-
-@pytest.mark.parametrize('link', [f"{product_base_link}/?promo=offer0"])
-def test_guest_cant_see_success_message_after_adding_product_to_basket(browser, link):
-    # GIVEN
-    page = BookPage(browser, link)
-    page.open()
-
-    # WHEN
-    page.add_to_basket() \
-        .solve_quiz_and_get_code()
-
-    # THEN
-    assert page.should_not_be_success_message(), "Success message is presented, but should not be"
+        # THEN
+        assert page.get_notification_messages().__contains__(book) \
+               and page.get_notification_messages().__contains__(price), \
+            f"notifications should contains book title: {book} and price: {price}"
 
 
-@pytest.mark.parametrize('link', [f"{product_base_link}/?promo=offer0"])
-def test_message_disappeared_after_adding_product_to_basket(browser, link):
-    # GIVEN
-    page = BookPage(browser, link)
-    page.open()
+    @pytest.mark.parametrize('link', [f"{product_base_link}/?promo=offer0"])
+    def test_guest_cant_see_success_message_after_adding_product_to_basket(browser, link):
+        # GIVEN
+        page = BookPage(browser, link)
+        page.open()
 
-    # WHEN
-    page.add_to_basket() \
-        .solve_quiz_and_get_code()
+        # WHEN
+        page.add_to_basket() \
+            .solve_quiz_and_get_code()
 
-    # THEN
-    assert page.should_be_disappearing_message(), "Success message not disappeared, but should be"
-
-
-@pytest.mark.parametrize('link', [f"{product_base_link}/?promo=offer0"])
-def test_guest_cant_see_success_message(browser, link):
-    # GIVEN
-    page = BookPage(browser, link)
-
-    # WHEN
-    page.open()
-
-    # THEN
-    assert page.should_not_be_success_message(), "Success message is presented, but should not be"
+        # THEN
+        assert page.should_not_be_success_message(), "Success message is presented, but should not be"
 
 
-def test_guest_should_see_login_link_on_product_page(browser):
+    @pytest.mark.parametrize('link', [f"{product_base_link}/?promo=offer0"])
+    def test_message_disappeared_after_adding_product_to_basket(browser, link):
+        # GIVEN
+        page = BookPage(browser, link)
+        page.open()
 
-    page = BookPage(browser, link)
-    page.open()
-    page.should_be_login_link()
+        # WHEN
+        page.add_to_basket() \
+            .solve_quiz_and_get_code()
+
+        # THEN
+        assert page.should_be_disappearing_message(), "Success message not disappeared, but should be"
 
 
-def test_guest_can_go_to_login_page(browser):
-    page = BookPage(browser, link)
-    page.open()
-    page.go_to_login_page()
-    login_page = LoginPage(browser, browser.current_url)
-    login_page.should_be_login_page()
+    @pytest.mark.parametrize('link', [f"{product_base_link}/?promo=offer0"])
+    def test_guest_cant_see_success_message(browser, link):
+        # GIVEN
+        page = BookPage(browser, link)
+
+        # WHEN
+        page.open()
+
+        # THEN
+        assert page.should_not_be_success_message(), "Success message is presented, but should not be"
