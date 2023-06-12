@@ -1,0 +1,22 @@
+name: Github Actions PyTests Pipeline
+run-name: ${{ github.actor }} is running the tests.
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: szenius/set-timezone@v1.2
+        with:
+          timezoneLinux: "Europe/Berlin"
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pip install pytest pytest-md pytest-emoji
+      - uses: pavelzw/pytest-action@v2
+        with:
+          emoji: false
+          verbose: false
+          job-summary: true
