@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -21,7 +21,7 @@ jobs:
         run: pip install pytest selenium
 
       - name: Install and run Chrome Driver
-      - uses: nanasess/setup-chromedriver@v2
+        uses: nanasess/setup-chromedriver@v2
         with:
           chromedriver-version: '113.0.5672.63'
         run: |
