@@ -1,8 +1,16 @@
 name: Github Actions PyTests Pipeline
 run-name: ${{ github.actor }} is running the tests.
 on:
-  push:
   workflow_dispatch:
+    inputs:
+      browser:
+        description: Choose browser
+        required: false
+        default: Chrome
+        type: choice
+        options:
+          - Chrome
+          - Firefox
 
 jobs:
   smoke_test:
@@ -21,10 +29,20 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Setup Chrome
+        if: "github.event.inputs.browser == 'Chrome'"
         run: sudo apt-get install google-chrome-stable
 
-      - name: Run Smoke Tests
-        run: pytest -v -m "login or login_guest"
+      - name: Setup Firefox
+        if: "github.event.inputs.browser == 'Firefox'"
+        run: sudo apt-get install firefox
+
+      - name: Run smoke tests on Chrome
+        if: "github.event.inputs.browser == 'Chrome'"
+        run: pytest -v -m "login or login_guest" --browser_name=chrome
+
+      - name: Run smoke tests on Firefox
+        if: "github.event.inputs.browser == 'Firefox'"
+        run: pytest -v -m "login or login_guest" --browser_name=firefox
 
   test:
     needs: smoke_test
@@ -43,7 +61,17 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Setup Chrome
+        if: "github.event.inputs.browser == 'Chrome'"
         run: sudo apt-get install google-chrome-stable
 
-      - name: Run Tests
-        run: pytest -v -m "not login and not login_guest"
+      - name: Setup Firefox
+        if: "github.event.inputs.browser == 'Firefox'"
+        run: sudo apt-get install firefox
+
+      - name: Run smoke tests on Chrome
+        if: "github.event.inputs.browser == 'Chrome'"
+        run: pytest -v -m "not login and not login_guest" --browser_name=chrome
+
+      - name: Run smoke tests on Firefox
+        if: "github.event.inputs.browser == 'Firefox'"
+        run: pytest -v -m "not login and not login_guest" --browser_name=firefox
