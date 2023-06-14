@@ -1,5 +1,8 @@
 import pytest
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+
 
 @pytest.fixture(scope="function")
 def browser(request):
@@ -7,10 +10,14 @@ def browser(request):
     browser = None
     if browser_name == "chrome":
         print("\nstart chrome browser for test..")
-        browser = webdriver.Chrome()
+        options_chrome = ChromeOptions()
+        options_chrome.add_argument('--headless')
+        browser = webdriver.Chrome(options=options_chrome)
     elif browser_name == "firefox":
         print("\nstart firefox browser for test..")
-        browser = webdriver.Firefox()
+        options = FirefoxOptions()
+        options.headless = True
+        browser = webdriver.Firefox(options=options)
     else:
         raise pytest.UsageError("--browser_name should be chrome or firefox")
     yield browser
