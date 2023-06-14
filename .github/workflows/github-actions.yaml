@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  smoke_test:
+  setup_environment:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,27 +23,18 @@ jobs:
       - name: Setup Chrome
         run: sudo apt-get install google-chrome-stable
 
+  smoke_test:
+    needs: setup_environment
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Run Smoke Tests
         run: pytest -v -m "login or login_guest"
 
   test:
-    needs: smoke_test
+    needs: [setup_environment, smoke_test]
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.x
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Setup Chrome
-        run: sudo apt-get install google-chrome-stable
-
       - name: Run Tests
         run: pytest -v -m "not login and not login_guest"
