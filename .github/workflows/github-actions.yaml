@@ -33,7 +33,7 @@ jobs:
 
       - name: Set up Chrome driver
         run: |
-          CHROME_VERSION=$(google-chrome-stable --version | grep -oP '(?<=Google Chrome )[^ ]+')
+          CHROME_VERSION="113.0.5672.63"
           CHROME_DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}")
           curl -s -o chromedriver_linux64.zip "https://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip"
           unzip chromedriver_linux64.zip -d $HOME
